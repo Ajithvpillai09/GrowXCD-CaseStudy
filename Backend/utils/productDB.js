@@ -17,7 +17,6 @@ export async function getAllProducts(){
 
 export async function getProductDetails(productId){
     try {
-           console.log(productId,"product id");
         const product = await db.product.findFirst({
             where:{
                 id:productId
@@ -33,6 +32,25 @@ export async function getProductDetails(productId){
         throw new Error("Error in fetching product details:",error)
     }
 }
+
+export async function updateQuantity(id,count){
+    try {
+        await db.product.update({
+            where:{
+                id
+            },
+           data:{
+            quantity:{
+                increment:count
+            }
+           }
+        })
+    } catch (error) {
+        throw new Error("Error in updating quantity:",error)
+    }
+}
+
+
 
 
 
