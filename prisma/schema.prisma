@@ -12,21 +12,23 @@ generator client {
 }
 
 model Product {
-  id            String      @id @default(uuid())
+  id            String       @id @default(uuid())
   name          String
-  imageUrl      String      @db.Text
-  description   String      @db.LongText
+  imageUrl      String       @db.Text
+  description   String       @db.LongText
   price         Int
   discountPrice Int
-  offer         Int         @default(0)
+  offer         Int          @default(0)
   quantity      Int
-  productId     String ?  
+  productId     String?
   freeProduct   FreeProduct? @relation(fields: [productId], references: [id])
 
-  @@index([productId])
+  productInCart ProductInCart?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([productId])
 }
 
 model FreeProduct {
@@ -38,4 +40,35 @@ model FreeProduct {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model ProductInCart {
+  id String @id @default(uuid())
+
+  cart   Cart   @relation(fields: [cartId], references: [id])
+  cartId String
+
+  item   Product @relation(fields: [itemId], references: [id])
+  itemId String  @unique
+
+  discountPrice Float
+  quantity      Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([cartId])
+  @@index([itemId])
+}
+
+model Cart {
+  id         String @id
+  discount   Float  @default(0)
+  totalPrice Float
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  products ProductInCart[]
+
 }
