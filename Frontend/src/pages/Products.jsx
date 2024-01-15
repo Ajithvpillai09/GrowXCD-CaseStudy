@@ -1,6 +1,7 @@
 import { useEffect,useState } from "react"
 import { getAllProducts } from "../api/productsApi"
 import { Link } from "react-router-dom"
+import Header from "../components/Header"
 
 export default function Products(){
 
@@ -17,11 +18,10 @@ export default function Products(){
 
 
    return(
+    <>
     <section className="bg-[#f1f5f9]">
+     
     <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16">
-        <div>
-          cart Icon
-        </div>
       <div className=" flex flex-col justify-evenly  p-8 md:p-12 mb-8">
         {/* <h2 className="text-center text-gray-900 dark:text-white text-xl md:text-4xl font-extrabold mb-2">
          THIS SEASON&#039;sS FRESH FITS
@@ -57,5 +57,6 @@ export default function Products(){
         </div>
       </div>
     </section>
+    </>
    )
 }
