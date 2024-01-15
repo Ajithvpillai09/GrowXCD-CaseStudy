@@ -13,6 +13,7 @@ router.post('/add-to-cart',authUser,controllers.addToCart)
 router.get('/cart',authUser,controllers.getCart)
 router.patch('/update-quantity',authUser,controllers.updateQuantity)
 router.patch('/delete',authUser,controllers.removeProduct)
+router.get('/cart-count',authUser,controllers.getCartCount)
 
 
 export default router;

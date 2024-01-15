@@ -133,3 +133,20 @@ export async function removeProduct(id,itemId,discount,totalPrice){
     
   }
 }
+
+export async function getCartCount(cartId){
+    try {
+       const data = await db.productInCart.aggregate({
+        where:{
+            cartId
+        },
+     _count:true
+       })
+
+        return data
+     
+    } catch (error) {
+      
+    }
+  }
+
