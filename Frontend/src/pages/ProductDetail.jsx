@@ -1,10 +1,14 @@
 import { useParams ,useNavigate} from "react-router-dom"
 import { useEffect,useState } from "react"
-import { getProductDetail } from "../api/productsApi";
+import { getProductDetail ,addToCart  } from "../api/productsApi";
+import { ClipLoader } from "react-spinners";
 
 export default function ProductDetail(){
 
     const [product,setProduct]  = useState({});
+    const [disble,setDisable] = useState(false)
+
+
     const { id } = useParams();
     const navigate = useNavigate()
 
@@ -13,37 +17,73 @@ export default function ProductDetail(){
             try {
                 const product = await getProductDetail(id)
                 product ? setProduct(product) : navigate('/')
+                console.log(product);
             } catch (error) {
                 console.log(error);
             }
         }
         productData()
-    })
+    },[])
+
+    async function cartUpdate(){
+        try {
+            setDisable(true)
+            await addToCart({productId:id})
+        } catch (error) {
+            console.log(error);
+        }finally{
+            setDisable(false)
+        }
+    }
 
 
     return(
-       <section className="pt-32 pb-12 lg:py-32 h-screen flex items-center">
-         <div className="container mx-auto">
-            <div className="flex flex-col lg:flex-row items-center">
-                <div className="flex flex-1 justify-center items-center mb-8 lg:mb-0">
-                    <img  src={`https://res.cloudinary.com/dcv6mx1nk/image/upload/${product?.imageUrl}`} className="max-w-[200px] lg:max-w-sm" />
-                </div>
-                <div className="flex-1 text-center lg:text-left">
-                    <h1 className="text-[26px] font-medium mb-2 max-w-[450px] mx-auto">Nike shoes</h1>
-                    <div className="text-xl text-red-500 font-medium mb-6">
-                        123333
-                    </div> 
-                    <p className="mb-8">sadjnjnfnenwf dkjnfnjwefi kjdwnjfnqwe knwqjf </p>
-                    <button className="bg-black py-8 text-white">
-                        Add to cart
-                    </button>
-
-                </div>
-
+        <section className="py-11 px-4 mx-auto max-w-screen-xl lg:py-16">
+            <div className='flex flex-col justify-between lg:flex-row gap-16 lg:items-center'>
+            <div className='flex flex-col gap-6 lg:w-2/4'>
+                <img src={`https://res.cloudinary.com/dcv6mx1nk/image/upload/${product?.imageUrl}`} alt="" className='w-full h-full aspect-square object-cover object-center rounded-xl'/>
+                
             </div>
-
-         </div>
-
-       </section>
+            <div className='flex flex-col gap-4 lg:w-2/4'>
+            <div>
+                <span className="mr-2 rounded-full bg-black px-1 text-center text-sm font-medium text-white">{product?.offer}% OFF</span>
+                <h1 className='text-3xl font-bold'>{product?.name}</h1>
+            </div>
+                <p className='text-gray-700'>
+                {product.description}
+                </p>
+                <div className="flex">
+                <p className="mt-1  mx-2 text-sm text-gray-500 line-through ">₹{product?.price}</p>
+                <h6 className='text-2xl font-semibold'>₹{product?.discountPrice}</h6>
+                </div>
+                {product?.freeProduct &&
+                <div className='flex flex-row h-24 gap-2'>
+                <img src={`https://res.cloudinary.com/dcv6mx1nk/image/upload/${product?.freeProduct?.imageUrl}`} alt="" className='w-24 h-24 rounded-md cursor-pointer' />
+                   <p className='text-gray-700'>
+                     Free {product?.freeProduct?.name} worth 
+                     <span className="text-2xl ml-1 font-semibold">
+                      ₹ {product?.freeProduct?.price}
+                     </span>
+                   </p>
+               </div>
+                }
+                <div className='flex flex-row items-center gap-12'>
+                    {/* <div className='flex flex-row items-center'>
+                        <button className='bg-gray-200 py-2 px-5 rounded-lg text-violet-800 text-3xl' onClick={() => setAmount((prev) => prev - 1)}>-</button>
+                        <span className='py-4 px-6 rounded-lg'>{amount}</span>
+                        <button className='bg-gray-200 py-2 px-4 rounded-lg text-violet-800 text-3xl' onClick={() => setAmount((prev) => prev + 1)}>+</button>
+                    </div> */}
+                    <button className= "bg-black text-white font-semibold py-3 px-16 rounded-xl h-full" onClick={cartUpdate}>
+                        
+                        {disble ?
+                         <ClipLoader color="white" size={25}/>
+                         :
+                         "Add to Cart"
+                        }
+                    </button>
+                </div>
+             </div>
+            </div>
+        </section>
     )
  }

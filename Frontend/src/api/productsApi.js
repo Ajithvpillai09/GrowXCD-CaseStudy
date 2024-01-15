@@ -23,9 +23,14 @@ export const getCart = async ()=>{
     return cart
 }
 
-export const addToCart = async ()=>{
-    const data = await axiosInstance.post('/add-to-cart')
-    return data
+export const addToCart = async (productData)=>{
+    try {
+        const response = await axiosInstance.post('/add-to-cart', productData);
+        return response.data;
+    } catch (error) {
+        console.log(error);
+        throw new Error("unable add to cart")
+    }
 }
 
 export const updateQuantity = async ()=>{
