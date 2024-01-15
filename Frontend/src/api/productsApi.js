@@ -38,3 +38,13 @@ export const updateQuantity = async ()=>{
     return data
 
 }
+
+export const getCartCount = async ()=>{
+    try {
+        const {data} = await axiosInstance.get('/cart-count')
+        return data
+        
+    } catch (error) {
+        throw new Error("unable get cart count")
+    }
+}

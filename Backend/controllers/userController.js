@@ -115,10 +115,14 @@ export const removeProduct = asyncHandler(async(req,res)=>{
         productDB.updateQuantity(productId,quantity)
     ])
 
-   
-
     res.status(200).json({message:"product removed successfully"})
 
+})
+
+export const getCartCount = asyncHandler(async(req,res)=>{
+    const id = req.user;
+    const data = await cartDB.getCartCount(id)
+    res.status(200).json(data)
 
 })
 
