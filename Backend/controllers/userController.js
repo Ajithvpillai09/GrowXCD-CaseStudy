@@ -29,7 +29,7 @@ export const addToCart = asyncHandler(async(req,res)=>{
             cartDB.getProductInCart(id,productId)
         ])
 
-    if(productInCart?.quantity -1 >= product.quantity || product.quantity === 0){
+    if(productInCart?.quantity -1 > product.quantity || product.quantity === 0){
         res.status(400)
         throw new Error('Maximum limit reached')
     }
@@ -64,7 +64,6 @@ export const getCart = asyncHandler(async(req,res)=>{
 export const updateQuantity = asyncHandler(async(req,res)=>{
 
     const cartId = req.user
-    console.log(req.body);
     let {productId,count,cartQuantity,productQuantity,discountPrice,offer} = req.body;
     count = parseInt(count);
     cartQuantity = parseInt(cartQuantity)
@@ -82,14 +81,18 @@ export const updateQuantity = asyncHandler(async(req,res)=>{
         throw new Error('Minimum limit reached')
     }
 
-    const discount = offer > 0 
+    let discountP = offer > 0 
     ? Math.round(discountPrice - ((discountPrice * offer)/100))
     : discountPrice
     
      let productCount = count === 1 ? -1 : 1
-     console.log(productCount);
+     const discount = count === 1 ? discountPrice - discountP : discountP - discountPrice
+
+         discountP = count === 1 ? discountP : -discountP
+
     await Promise.all([
-        cartDB.updateProductInCart(cartId,productId,discount,count),
+        cartDB.updateProductInCart(cartId,productId,discountP,count),
+        cartDB.addToCart(cartId,productId,discount,discountP),
         productDB.updateQuantity(productId,productCount)
     ])
    
@@ -98,15 +101,21 @@ export const updateQuantity = asyncHandler(async(req,res)=>{
 
 export const removeProduct = asyncHandler(async(req,res)=>{
 
-    const {productId,discount,totalPrice,quantity} = req.body
+    let {productId,productPrice,discountPrice,quantity} = req.body
+    productPrice = parseInt(productPrice)
+    discountPrice = parseInt(discountPrice)
+    quantity = parseInt(quantity)
+    
+    let discount = (productPrice*quantity) - discountPrice
+
     const id = req.user;
 
     await Promise.all([
-        cartDB.removeProduct(id,productId,discount,totalPrice),
+        cartDB.removeProduct(id,productId,discount,discountPrice),
         productDB.updateQuantity(productId,quantity)
     ])
 
-    console.log(req.body);
+   
 
     res.status(200).json({message:"product removed successfully"})
 

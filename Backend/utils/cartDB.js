@@ -25,7 +25,7 @@ export async function getCart(id){
         return cart
         
     } catch (error) {
-        console.log(error);
+
         throw new Error("Error in fetching  cart:",error)
     }
 }
@@ -92,7 +92,7 @@ export async function updateProductInCart(id,productId,discountPrice,count){
              },
              discountPrice:{
                 increment:discountPrice
-             }
+             },
         },
         create:{
             cartId: id,   
@@ -103,13 +103,14 @@ export async function updateProductInCart(id,productId,discountPrice,count){
        })
         
     } catch (error) {
-        console.log(error);
+        
         throw new Error("Error in updating to cart:",error)
     }
 }
 
 export async function removeProduct(id,itemId,discount,totalPrice){
   try {
+   
       
     await db.cart.update({
         where:{
@@ -117,14 +118,10 @@ export async function removeProduct(id,itemId,discount,totalPrice){
         },
         data:{
             discount:{
-                decrement:{
-                   discount
-                }
+                decrement: discount
             },
             totalPrice:{
-                decrement:{
-                  totalPrice
-                }
+                decrement:totalPrice
             },
             products:{
                 delete:{itemId}
