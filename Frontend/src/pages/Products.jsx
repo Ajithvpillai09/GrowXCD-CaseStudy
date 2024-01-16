@@ -10,7 +10,6 @@ export default function Products(){
     useEffect(()=>{
        async function fetchAllProducts(){
           const {data} = await getAllProducts();
-          console.log(data.products);
           setProducts(data.products)
        }
        fetchAllProducts()
@@ -23,9 +22,7 @@ export default function Products(){
      
     <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16">
       <div className=" flex flex-col justify-evenly  p-8 md:p-12 mb-8">
-        {/* <h2 className="text-center text-gray-900 dark:text-white text-xl md:text-4xl font-extrabold mb-2">
-         THIS SEASON&#039;sS FRESH FITS
-        </h2> */}
+        
         <div className="grid lg:grid-cols-3 justify-items-center ">
           {
               products && products?.map((doc)=>{
