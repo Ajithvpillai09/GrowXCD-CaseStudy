@@ -55,6 +55,7 @@ export const getCart = asyncHandler(async(req,res)=>{
 
      const id = req.user;
      const cart = await cartDB.getCart(id)
+     
 
      res.status(200).json({cart})
 
