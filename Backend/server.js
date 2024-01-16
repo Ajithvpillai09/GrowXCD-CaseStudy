@@ -10,7 +10,6 @@ import router from "./routes/router.js";
 
 dotenv.config()
 
-const __dirname = path.resolve();
 
 const app = express();
 const server = createServer(app)
@@ -26,15 +25,18 @@ app.use(cookieParser());
 app.use('/api',router)
 
 
-if(process.env.NODE_ENV === "development"){
-   app.get('/',(req,res)=>{
-    res.send("server running....port 8080")
-   })
-}else{
-    app.get('/', (req, res) =>
-    res.sendFile(path.resolve(__dirname, './frontend/javaScript', 'index.html'))
-);
-}
+if (process.env.NODE_ENV === 'production') {
+    const __dirname = path.resolve();
+    app.use(express.static(path.join(__dirname, '/Frontend/dist')));
+  
+    app.get('*', (req, res) =>
+      res.sendFile(path.resolve(__dirname, 'Frontend', 'dist', 'index.html'))
+    );
+    } else {
+      app.get('/', (req, res) => {
+        res.send('API is running....');
+      });
+    } 
 
 
 app.use(notFound);
