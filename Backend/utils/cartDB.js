@@ -109,9 +109,7 @@ export async function updateProductInCart(id,productId,discountPrice,count){
 }
 
 export async function removeProduct(id,itemId,discount,totalPrice){
-  try {
-   
-      
+  try {   
     await db.cart.update({
         where:{
             id

@@ -1,7 +1,6 @@
 import { useEffect,useState } from "react"
 import { getAllProducts } from "../api/productsApi"
 import { Link } from "react-router-dom"
-import Header from "../components/Header"
 
 export default function Products(){
 
@@ -18,7 +17,7 @@ export default function Products(){
 
    return(
     <>
-    <section className="bg-[#f1f5f9]">
+    <section className="bg-[#f1f5f9] h-screen">
      
     <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16">
       <div className=" flex flex-col justify-evenly  p-8 md:p-12 mb-8">
@@ -53,6 +52,7 @@ export default function Products(){
           </div>
         </div>
       </div>
+      x
     </section>
     </>
    )

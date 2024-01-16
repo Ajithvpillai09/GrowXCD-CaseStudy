@@ -1,18 +1,24 @@
-import { useState,useEffect } from "react"
+import { useState,useEffect ,useContext} from "react"
 import { getCart } from "../api/productsApi"
 import { updateQuantity ,removeProduct} from "../api/productsApi"
 import {toast} from 'react-toastify'
+import { CartContext } from "../context/cartContext"
+
+
 
 export default function Cart(){
 
     const [cart,setCart] = useState(null)
     const [disable,setDisable] = useState(false)
-    
+
+
+    const {triggerRerender} = useContext(CartContext)
+
+   
     useEffect(()=>{
         async function cartDetails(){
             try {
                 const data = await getCart()
-                console.log(data);
                 setCart(data)
             } catch (error) {
                 console.log(error);
@@ -23,7 +29,6 @@ export default function Cart(){
 
     async function quantityUpdate(productId,count,cartQuantity,productQuantity,discountPrice,offer){
        try {
-          setDisable(true)
           const data = {
             productId,
             count,
@@ -43,7 +48,6 @@ export default function Cart(){
 
     async function productRemove(productId,productPrice,discountPrice,quantity){
         try {
-            setDisable(true)
             const data={
                 productId,
                 productPrice,
@@ -51,7 +55,9 @@ export default function Cart(){
                 quantity
             }
             const rslt = await removeProduct(data)
+            triggerRerender()
             toast.success(rslt)
+            
         } catch (error) {
             toast.error(error.message)
         }finally{
@@ -95,9 +101,10 @@ export default function Cart(){
                 </div>
               <div className="mt-4 flex justify-between sm:space-y-6 sm:mt-0 sm:block sm:space-x-6">
                 <div className="flex items-center border-gray-100">
-                <button className="cursor-pointer rounded-l bg-gray-100 py-1 px-3.5 duration-100 hover:bg-blue-500 hover:text-blue-50"
+                <button className="cursor-pointer rounded-l bg-gray-100 py-1 px-3.5 duration-100 hover:bg-gray-500 hover:text-blue-50"
                  disabled={disable}
                  onClick={()=>{
+                  setDisable(true)
                     quantityUpdate(
                         doc?.item?.id,
                         -1,
@@ -109,9 +116,10 @@ export default function Cart(){
                  }} 
                 > - </button>
                   <p className="h-8 w-8 border bg-white text-center text-xs flex justify-center items-center">{doc?.quantity}</p>
-                <button className="cursor-pointer rounded-r bg-gray-100 py-1 px-3 duration-100 hover:bg-blue-500 hover:text-blue-50"
+                <button className="cursor-pointer rounded-r bg-gray-100 py-1 px-3 duration-100 hover:bg-gray-500 hover:text-blue-50"
                 disabled={disable}
                 onClick={()=>{
+                    setDisable(true)
                     quantityUpdate(
                         doc?.item?.id,
                         1,
@@ -129,11 +137,12 @@ export default function Cart(){
                   <button
                   disabled={disable}
                   onClick={()=>{
+                    setDisable(true)
                     productRemove(
                         doc?.item?.id,
                         doc?.item?.discountPrice,
                         doc?.discountPrice,
-                        doc?.item?.quantity,
+                        doc?.quantity,
                     )
                   }}
                   >

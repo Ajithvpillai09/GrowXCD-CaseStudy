@@ -1,9 +1,14 @@
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import PropTypes from 'prop-types';
+import { CartContext } from "../context/cartContext";
+import { useContext } from "react";
 
 
-export default function Header({count}){
+export default function Header(){
+    
+    const {count} = useContext(CartContext)
+   
     const navigate = useNavigate()
 
     return(

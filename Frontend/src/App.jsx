@@ -16,10 +16,6 @@ function App() {
            <Route path='/cart' element={<Cart/>} />
            <Route path='*' element={<NotFound/>}/>
        </Route>
-        {/* <Route path='/'element={<Products/>} />
-        <Route path='/product/:id' element={<ProductDetail/>} />
-        <Route path='/cart' element={<Cart/>} />
-        <Route path='*' element={<NotFound/>}/> */}
     </Routes>
   )
 }
