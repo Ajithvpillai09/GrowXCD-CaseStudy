@@ -1,12 +1,19 @@
 import { useParams ,useNavigate} from "react-router-dom"
-import { useEffect,useState } from "react"
+import { useContext, useEffect,useState } from "react"
 import { getProductDetail ,addToCart  } from "../api/productsApi";
 import { ClipLoader } from "react-spinners";
+import {toast} from "react-toastify"
+import { CartContext } from "../context/cartContext";
+
+
 
 export default function ProductDetail(){
 
     const [product,setProduct]  = useState({});
-    const [disble,setDisable] = useState(false)
+    const [disable,setDisable] = useState(false)
+
+    const {triggerRerender} = useContext(CartContext)
+    
 
 
     const { id } = useParams();
@@ -17,9 +24,8 @@ export default function ProductDetail(){
             try {
                 const product = await getProductDetail(id)
                 product ? setProduct(product) : navigate('/')
-                console.log(product);
             } catch (error) {
-                console.log(error);
+                navigate('/')
             }
         }
         productData()
@@ -29,6 +35,9 @@ export default function ProductDetail(){
         try {
             setDisable(true)
             await addToCart({productId:id})
+            toast.success("product added to cart")
+            triggerRerender()
+           
         } catch (error) {
             console.log(error);
         }finally{
@@ -38,7 +47,7 @@ export default function ProductDetail(){
 
 
     return(
-        <section className="py-11 px-4 mx-auto max-w-screen-xl lg:py-16">
+        <section className="py-11 px-4 mt-10 mx-auto max-w-screen-xl lg:py-16">
             <div className='flex flex-col justify-between lg:flex-row gap-16 lg:items-center'>
             <div className='flex flex-col gap-6 lg:w-2/4'>
                 <img src={`https://res.cloudinary.com/dcv6mx1nk/image/upload/${product?.imageUrl}`} alt="" className='w-full h-full aspect-square object-cover object-center rounded-xl'/>
@@ -46,7 +55,11 @@ export default function ProductDetail(){
             </div>
             <div className='flex flex-col gap-4 lg:w-2/4'>
             <div>
-                <span className="mr-2 rounded-full bg-black px-1 text-center text-sm font-medium text-white">{product?.offer}% OFF</span>
+                {
+                    product?.offer > 0 
+                    &&
+                    <span className="mr-2 rounded-full bg-black px-1 text-center text-sm font-medium text-white">{product?.offer}% OFF</span>
+                }
                 <h1 className='text-3xl font-bold'>{product?.name}</h1>
             </div>
                 <p className='text-gray-700'>
@@ -68,14 +81,11 @@ export default function ProductDetail(){
                </div>
                 }
                 <div className='flex flex-row items-center gap-12'>
-                    {/* <div className='flex flex-row items-center'>
-                        <button className='bg-gray-200 py-2 px-5 rounded-lg text-violet-800 text-3xl' onClick={() => setAmount((prev) => prev - 1)}>-</button>
-                        <span className='py-4 px-6 rounded-lg'>{amount}</span>
-                        <button className='bg-gray-200 py-2 px-4 rounded-lg text-violet-800 text-3xl' onClick={() => setAmount((prev) => prev + 1)}>+</button>
-                    </div> */}
-                    <button className= "bg-black text-white font-semibold py-3 px-16 rounded-xl h-full" onClick={cartUpdate}>
-                        
-                        {disble ?
+                    <button className= "bg-black text-white font-semibold py-3 px-16 rounded-xl h-full" 
+                        onClick={cartUpdate}
+                        disabled={disable}
+                    >
+                        {disable ?
                          <ClipLoader color="white" size={25}/>
                          :
                          "Add to Cart"

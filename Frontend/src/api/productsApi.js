@@ -19,9 +19,14 @@ export const getProductDetail = async (id)=>{
 }
 
 export const getCart = async ()=>{
-    const cart = await axiosInstance.get('/cart')
-    return cart
+    try {
+        const {data} = await axiosInstance.get('/cart')
+        return data.cart
+      } catch (error) {
+        throw new Error("unable fetch cart")
+    }
 }
+    
 
 export const addToCart = async (productData)=>{
     try {
@@ -33,9 +38,14 @@ export const addToCart = async (productData)=>{
     }
 }
 
-export const updateQuantity = async ()=>{
-    const data = await axiosInstance.patch('/update-quantity')
-    return data
+export const updateQuantity = async (data)=>{
+    try {
+        const rslt = await axiosInstance.patch('/update-quantity',data)
+       return rslt?.data?.message
+    } catch (error) {
+        throw new Error(error?.response?.data?.message || error)
+    }
+    
 
 }
 
@@ -46,5 +56,15 @@ export const getCartCount = async ()=>{
         
     } catch (error) {
         throw new Error("unable get cart count")
+    }
+}
+
+export const removeProduct= async(data)=>{
+    try {
+        const rslt = await axiosInstance.patch('/delete',data)
+        return rslt?.data?.message
+        
+    } catch (error) {
+        throw new Error("unable to remove product")
     }
 }
